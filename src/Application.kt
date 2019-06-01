@@ -1,8 +1,8 @@
 package com.spyrdonapps
 
+import com.spyrdonapps.webapp.about
+import com.spyrdonapps.webapp.home
 import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
 import io.ktor.routing.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -12,13 +12,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module(testing: Boolean = false) {
 
     routing {
-        get("/") {
-            call.respondText("hello world")
-        }
-
-        get("/hello") {
-            call.respondText("hello ktor")
-        }
+        home()
+        about()
     }
 }
-

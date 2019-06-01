@@ -4,10 +4,10 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
-const val HOME = "/"
+const val ABOUT = "/about"
 
-fun Route.home() {
-    get(HOME) {
-        call.respondText("hello world")
+fun Route.about() {
+    get(ABOUT) {
+        call.respondText("About")
     }
 }
