@@ -13,6 +13,7 @@ import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.freemarker.*
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -26,8 +27,10 @@ fun Application.module(testing: Boolean = false) {
 
     install(StatusPages) {
         exception<Throwable> { e ->
-            call.respondText(e.localizedMessage,
-                ContentType.Text.Plain, HttpStatusCode.InternalServerError)
+            call.respondText(
+                e.localizedMessage,
+                ContentType.Text.Plain, HttpStatusCode.InternalServerError
+            )
         }
     }
 
@@ -51,6 +54,9 @@ fun Application.module(testing: Boolean = false) {
     val db = InMemoryRepository()
 
     routing {
+        static("/static") {
+            resources("images")
+        }
         home()
         about()
         phrases(db)
