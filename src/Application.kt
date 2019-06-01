@@ -6,8 +6,10 @@ import com.spyrdonapps.repository.InMemoryRepository
 import com.spyrdonapps.webapp.about
 import com.spyrdonapps.webapp.home
 import com.spyrdonapps.webapp.phrases
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.*
 import io.ktor.features.*
+import io.ktor.freemarker.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -29,6 +31,10 @@ fun Application.module(testing: Boolean = false) {
 
     install(ContentNegotiation) {
         moshi()
+    }
+
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
     val db = InMemoryRepository()
