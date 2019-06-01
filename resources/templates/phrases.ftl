@@ -5,8 +5,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th<Emoji</th>
-                    <th<Phrase</th>
+                    <th>Emoji</th>
+                    <th>Phrase</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +22,7 @@
                             <form method="post" action="/phrases">
                                 <input type="hidden" name="id" value="${phrase.id}">
                                 <input type="hidden" name="action" value="delete">
-                                <input type="image" name="id" src="/static/delete.png" width="24" height="24" border="0" alt="Delete">
+                                <input type="image" name="id" src="/static/delete.png" width="24" height="24" border="0" alt="delete.png?">
                             </form>
                         </td>
                     </tr>
