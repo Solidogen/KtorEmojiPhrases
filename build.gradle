@@ -34,5 +34,6 @@ dependencies {
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     implementation "com.ryanharter.ktor:ktor-moshi:$moshi_version"
     implementation "io.ktor:ktor-freemarker:$ktor_version"
+    implementation "io.ktor:ktor-auth:$ktor_version"
 
 }
