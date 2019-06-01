@@ -1,21 +1,27 @@
 package com.spyrdonapps.webapp
 
+import com.spyrdonapps.model.AppLocation
 import com.spyrdonapps.model.EmojiPhrase
 import com.spyrdonapps.model.User
+import com.spyrdonapps.redirect
 import com.spyrdonapps.repository.Repository
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.freemarker.*
+import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
 const val PHRASES = "/phrases"
 
+@Location(PHRASES)
+class Phrases : AppLocation
+
 fun Route.phrases(db: Repository) {
 
     authenticate("auth") {
-        get(PHRASES) {
+        get<Phrases> {
             val user = call.authentication.principal as User
             val phrases = db.phrases()
             call.respond(
@@ -28,7 +34,7 @@ fun Route.phrases(db: Repository) {
                 )
             )
         }
-        post(PHRASES) {
+        post<Phrases> {
             val params = call.receiveParameters()
             val action = params["action"] ?: throw IllegalArgumentException("Missing parameter: action")
             when (action) {
@@ -42,7 +48,7 @@ fun Route.phrases(db: Repository) {
                     db.add(EmojiPhrase(emoji, phrase))
                 }
             }
-            call.respondRedirect(PHRASES)
+            call.redirect(Phrases())
         }
     }
 }

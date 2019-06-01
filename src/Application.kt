@@ -2,6 +2,7 @@ package com.spyrdonapps
 
 import com.ryanharter.ktor.moshi.moshi
 import com.spyrdonapps.api.phrase
+import com.spyrdonapps.model.AppLocation
 import com.spyrdonapps.model.User
 import com.spyrdonapps.repository.InMemoryRepository
 import com.spyrdonapps.webapp.about
@@ -14,6 +15,7 @@ import io.ktor.features.*
 import io.ktor.freemarker.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.locations.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -51,6 +53,8 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(Locations)
+
     val db = InMemoryRepository()
 
     routing {
@@ -67,3 +71,7 @@ fun Application.module(testing: Boolean = false) {
 }
 
 const val API_VERSION = "/api/v1"
+
+suspend fun ApplicationCall.redirect(location: AppLocation) {
+    respondRedirect(application.locations.href(location))
+}
