@@ -16,7 +16,7 @@
                             <h3>${phrase.emoji}</h3>
                         </td>
                         <td style="vertical-align: middle">
-                            <h3>${phrase.emoji}</h3>
+                            <h3>${phrase.phrase}</h3>
                         </td>
                         <td class="col-md-1" style="text-align: center; vertical-align: middle;">
                             <form method="post" action="/phrases">
