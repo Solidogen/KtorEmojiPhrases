@@ -8,6 +8,6 @@ const val HOME = "/"
 
 fun Route.home() {
     get(HOME) {
-        call.respondText("hello world")
+        call.respondRedirect(PHRASES)
     }
 }

@@ -1,10 +1,12 @@
 package com.spyrdonapps.webapp
 
+import com.spyrdonapps.model.EmojiPhrase
 import com.spyrdonapps.model.User
 import com.spyrdonapps.repository.Repository
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.freemarker.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 
@@ -25,6 +27,13 @@ fun Route.phrases(db: Repository) {
                     )
                 )
             )
+        }
+        post(PHRASES) {
+            val params = call.receiveParameters()
+            val emoji = params["emoji"] ?: throw IllegalArgumentException("Missing parameter: emoji")
+            val phrase = params["phrase"] ?: throw IllegalArgumentException("Missing parameter: phrase")
+            db.add(EmojiPhrase(emoji, phrase))
+            call.respondRedirect(PHRASES)
         }
     }
 }
