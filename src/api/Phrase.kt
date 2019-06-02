@@ -1,11 +1,9 @@
 package com.spyrdonapps.api
 
 import com.spyrdonapps.API_VERSION
-import com.spyrdonapps.model.EmojiPhrase
 import com.spyrdonapps.model.Request
 import com.spyrdonapps.repository.Repository
 import io.ktor.application.*
-import io.ktor.auth.*
 import io.ktor.locations.*
 import io.ktor.request.*
 import io.ktor.response.*

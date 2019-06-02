@@ -4,16 +4,19 @@
 // accessing postgres user in terminal
 
 $
-sudo su - postgres
+sudo su - postgres (no idea if I need it anymore)
 psql -U postgres
+psql -U postgres -d emojidb (log straight into DB)
 $
+also IntelliJ -> database -> add -> paste JDBC link and download drivers if asked
 
-
-// creating db
+// creating/dropping db
 
 $
-create database emojiphrases;
+create database emojidb;
 
+psql -U postgres -d postgres  (connect to another database to drop current one)
+drop database emojidb;
 $
 
 
@@ -22,7 +25,7 @@ $
 jdbcUrl = System.getenv("JDBC_DATABASE_URL")
 
 Intellij -> run configuration -> env variables -> add ->
-JDBC_DATABASE_URL jdbc:postgresql:emojiphrases?user=postgres
+JDBC_DATABASE_URL jdbc:postgresql:emojidb?user=postgres      (HERE IS WHICH DATABASE APP CONNECTS TO)
 
 
 // postgres reset after changing pg_hba.conf

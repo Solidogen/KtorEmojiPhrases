@@ -35,8 +35,8 @@
 
     <div class="panel-body">
         <form method="post" action="/phrases">
-            <input type="hidden" name="date" value="${date?c}"
-            <input type="hidden" name="code" value="${code}"
+            <input type="hidden" name="date" value="${date?c}">
+            <input type="hidden" name="code" value="${code}">
             <input type="hidden" name="action" value="add">
             Emoji:<br>
             <input type="text" name="emoji" /><br>

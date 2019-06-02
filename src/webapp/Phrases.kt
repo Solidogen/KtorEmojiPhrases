@@ -65,7 +65,7 @@ fun Route.phrases(db: Repository, hashFunction: (String) -> String) {
             "add" -> {
                 val emoji = params["emoji"] ?: throw IllegalArgumentException("Missing parameter: emoji")
                 val phrase = params["phrase"] ?: throw IllegalArgumentException("Missing parameter: phrase")
-                db.add("", emoji, phrase)
+                db.add(user!!.userId, emoji, phrase)
             }
         }
         call.redirect(Phrases())
