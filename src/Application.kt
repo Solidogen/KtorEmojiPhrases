@@ -4,7 +4,8 @@ import com.ryanharter.ktor.moshi.moshi
 import com.spyrdonapps.api.phrase
 import com.spyrdonapps.model.AppLocation
 import com.spyrdonapps.model.User
-import com.spyrdonapps.repository.InMemoryRepository
+import com.spyrdonapps.repository.DatabaseFactory
+import com.spyrdonapps.repository.EmojiPhrasesRepository
 import com.spyrdonapps.webapp.about
 import com.spyrdonapps.webapp.home
 import com.spyrdonapps.webapp.phrases
@@ -55,7 +56,9 @@ fun Application.module(testing: Boolean = false) {
 
     install(Locations)
 
-    val db = InMemoryRepository()
+    DatabaseFactory.init()
+
+    val db = EmojiPhrasesRepository()
 
     routing {
         static("/static") {
