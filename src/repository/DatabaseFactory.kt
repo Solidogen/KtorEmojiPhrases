@@ -29,26 +29,14 @@ object DatabaseFactory {
         }
     }
 
-    // todo uncomment and replace
-//    private fun hikari() = HikariDataSource(HikariConfig().apply {
-//        driverClassName = "org.h2.Driver"
-//        jdbcUrl = "jdbc:h2:mem:test"
-//        maximumPoolSize = 3
-//        isAutoCommit = false
-//        transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-//        validate()
-//    })
-
-    private fun hikari(): HikariDataSource {
-        val config = HikariConfig()
-        config.driverClassName = "org.h2.Driver"
-        config.jdbcUrl = "jdbc:h2:mem:test"
-        config.maximumPoolSize = 3
-        config.isAutoCommit = false
-        config.transactionIsolation = "TRANSACTION_REPEATABLE_READ"
-        config.validate()
-        return HikariDataSource(config)
-    }
+    private fun hikari() = HikariDataSource(HikariConfig().apply {
+        driverClassName = "org.postgresql.Driver"
+        jdbcUrl = System.getenv("JDBC_DATABASE_URL")
+        maximumPoolSize = 3
+        isAutoCommit = false
+        transactionIsolation = "TRANSACTION_REPEATABLE_READ"
+        validate()
+    })
 
     suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
         transaction {

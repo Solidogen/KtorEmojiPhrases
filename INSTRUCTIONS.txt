@@ -1,0 +1,26 @@
+// POSTGRES
+
+// accessing postgres user in terminal
+
+$
+sudo su - postgres
+psql -U postgres
+$
+
+// creating db
+
+$
+create database emojiphrases;
+
+$
+
+// postgres env variable
+
+jdbcUrl = System.getenv("JDBC_DATABASE_URL")
+
+Intellij -> run configuration -> env variables -> add ->
+JDBC_DATABASE_URL jdbc:postgresql:emojiphrases?user=postgres
+
+
+
+
