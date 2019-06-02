@@ -35,6 +35,7 @@ fun Application.module(testing: Boolean = false) {
 
     install(StatusPages) {
         exception<Throwable> { e ->
+            System.out.print(e) // todo does it work? there is some kind of error while sign up I want to catch stack trace of
             call.respondText(
                 e.localizedMessage,
                 ContentType.Text.Plain, HttpStatusCode.InternalServerError

@@ -70,7 +70,8 @@ fun Route.signUp(db: Repository, hashFunction: (String) -> String) {
                     }
                 }
 
-                call.sessions.set(newUser.userId)
+                call.sessions.set(EPSession(newUser.userId))
+                call.redirect(Phrases())
             }
         }
     }
