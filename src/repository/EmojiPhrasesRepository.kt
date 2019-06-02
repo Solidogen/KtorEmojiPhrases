@@ -28,8 +28,8 @@ class EmojiPhrasesRepository : Repository {
 
     override suspend fun phrase(id: String): EmojiPhrase? = phrase(id.toInt())
 
-    override suspend fun phrases(): List<EmojiPhrase> {
-        return EmojiPhrasesTable.selectAll().map { toEmojiPhrase(it) }
+    override suspend fun phrases(): List<EmojiPhrase> = dbQuery {
+        EmojiPhrasesTable.selectAll().map { toEmojiPhrase(it) }
     }
 
     override suspend fun remove(id: Int): Boolean {
