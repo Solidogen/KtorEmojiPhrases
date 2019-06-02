@@ -20,6 +20,8 @@
                         </td>
                         <td class="col-md-1" style="text-align: center; vertical-align: middle;">
                             <form method="post" action="/phrases">
+                                <input type="hidden" name="date" value="${date?c}"
+                                <input type="hidden" name="code" value="${code}"
                                 <input type="hidden" name="id" value="${phrase.id}">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="image" name="id" src="/static/delete.png" width="24" height="24" border="0" alt="delete.png?">
@@ -33,6 +35,8 @@
 
     <div class="panel-body">
         <form method="post" action="/phrases">
+            <input type="hidden" name="date" value="${date?c}"
+            <input type="hidden" name="code" value="${code}"
             <input type="hidden" name="action" value="add">
             Emoji:<br>
             <input type="text" name="emoji" /><br>

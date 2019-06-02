@@ -3,7 +3,9 @@ package com.spyrdonapps
 import com.ryanharter.ktor.moshi.moshi
 import com.spyrdonapps.api.phrase
 import com.spyrdonapps.auth.hash
+import com.spyrdonapps.auth.hashKey
 import com.spyrdonapps.model.AppLocation
+import com.spyrdonapps.model.EPSession
 import com.spyrdonapps.model.User
 import com.spyrdonapps.repository.DatabaseFactory
 import com.spyrdonapps.repository.EmojiPhrasesRepository
@@ -16,8 +18,12 @@ import io.ktor.freemarker.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.locations.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.sessions.*
+import java.net.URI
+import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -46,6 +52,12 @@ fun Application.module(testing: Boolean = false) {
 
     install(Locations)
 
+    install(Sessions) {
+        cookie<EPSession>("SESSION") {
+            transform(SessionTransportTransformerMessageAuthentication(hashKey))
+        }
+    }
+
     val hashFunction = { s: String ->
         hash(s)
     }
@@ -58,9 +70,9 @@ fun Application.module(testing: Boolean = false) {
         static("/static") {
             resources("images")
         }
-        home()
-        about()
-        phrases(db)
+        home(db)
+        about(db)
+        phrases(db, hashFunction)
         signIn(db, hashFunction)
         signOut()
         signUp(db, hashFunction)
@@ -75,3 +87,13 @@ const val API_VERSION = "/api/v1"
 suspend fun ApplicationCall.redirect(location: AppLocation) {
     respondRedirect(application.locations.href(location))
 }
+
+fun ApplicationCall.refererHost() = request.header(HttpHeaders.Referrer)?.let { URI.create(it).host }
+
+fun ApplicationCall.securityCode(date: Long, user: User, hashFunction: (String) -> String) =
+    hashFunction("$date:${user.userId}:${request.host()}:${refererHost()}")
+
+fun ApplicationCall.verifyCode(date: Long, user: User, code: String, hashFunction: (String) -> String) =
+        securityCode(date, user, hashFunction) == code &&
+                (System.currentTimeMillis() - date).let { it > 0 && it < TimeUnit.MILLISECONDS.convert(2, TimeUnit.HOURS) }
+
