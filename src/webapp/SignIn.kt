@@ -48,9 +48,9 @@ fun Route.signIn(db: Repository, hashFunction: (String) -> String) {
             db.user(it.userId)
         }
         user?.run {
-            call.respond(FreeMarkerContent("signin.ftl", null))
-        } ?: run {
             call.redirect(Home())
+        } ?: run {
+            call.respond(FreeMarkerContent("signin.ftl", null))
         }
     }
 }
