@@ -1,5 +1,6 @@
 // POSTGRES
 
+
 // accessing postgres user in terminal
 
 $
@@ -7,12 +8,14 @@ sudo su - postgres
 psql -U postgres
 $
 
+
 // creating db
 
 $
 create database emojiphrases;
 
 $
+
 
 // postgres env variable
 
@@ -22,5 +25,8 @@ Intellij -> run configuration -> env variables -> add ->
 JDBC_DATABASE_URL jdbc:postgresql:emojiphrases?user=postgres
 
 
+// postgres reset after changing pg_hba.conf
 
-
+$
+sudo /etc/init.d/postgresql restart
+$

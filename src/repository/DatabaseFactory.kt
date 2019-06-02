@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.transaction
 
 object DatabaseFactory {
@@ -17,15 +16,6 @@ object DatabaseFactory {
 
         transaction {
             SchemaUtils.create(EmojiPhrasesTable)
-
-            EmojiPhrasesTable.insert {
-                it[emoji] = "e1"
-                it[phrase] = "p1"
-            }
-            EmojiPhrasesTable.insert {
-                it[emoji] = "e2"
-                it[phrase] = "p2"
-            }
         }
     }
 
