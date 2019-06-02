@@ -2,13 +2,12 @@ package com.spyrdonapps
 
 import com.ryanharter.ktor.moshi.moshi
 import com.spyrdonapps.api.phrase
+import com.spyrdonapps.auth.hash
 import com.spyrdonapps.model.AppLocation
 import com.spyrdonapps.model.User
 import com.spyrdonapps.repository.DatabaseFactory
 import com.spyrdonapps.repository.EmojiPhrasesRepository
-import com.spyrdonapps.webapp.about
-import com.spyrdonapps.webapp.home
-import com.spyrdonapps.webapp.phrases
+import com.spyrdonapps.webapp.*
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -45,16 +44,11 @@ fun Application.module(testing: Boolean = false) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }
 
-    install(Authentication) {
-        basic(name = "auth") {
-            realm = "Ktor server"
-            validate { credentials ->
-                if (credentials.password == "${credentials.name}123") User(credentials.name) else null
-            }
-        }
-    }
-
     install(Locations)
+
+    val hashFunction = { s: String ->
+        hash(s)
+    }
 
     DatabaseFactory.init()
 
@@ -67,6 +61,9 @@ fun Application.module(testing: Boolean = false) {
         home()
         about()
         phrases(db)
+        signIn(db, hashFunction)
+        signOut()
+        signUp(db, hashFunction)
 
         // API
         phrase(db)

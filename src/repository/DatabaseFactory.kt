@@ -1,6 +1,7 @@
 package com.spyrdonapps.repository
 
 import com.spyrdonapps.model.EmojiPhrasesTable
+import com.spyrdonapps.model.UsersTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +17,7 @@ object DatabaseFactory {
 
         transaction {
             SchemaUtils.create(EmojiPhrasesTable)
+            SchemaUtils.create(UsersTable)
         }
     }
 
