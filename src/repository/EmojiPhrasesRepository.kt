@@ -11,15 +11,14 @@ import java.lang.IllegalArgumentException
 
 class EmojiPhrasesRepository : Repository {
 
-    override suspend fun add(userId: String, emojiValue: String, phraseValue: String) {
-        transaction {
+    override suspend fun add(userId: String, emojiValue: String, phraseValue: String): EmojiPhrase? =
+        dbQuery {
             EmojiPhrasesTable.insert {
                 it[user] = userId
                 it[emoji] = emojiValue
                 it[phrase] = phraseValue
-            }
+            }.resultedValues?.map { toEmojiPhrase(it) }?.get(0)
         }
-    }
 
     override suspend fun phrase(id: Int): EmojiPhrase? = dbQuery {
         EmojiPhrasesTable.select {
