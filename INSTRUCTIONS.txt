@@ -62,3 +62,41 @@ touch Procfile ->
     web: ./build/install/emojiphrases/bin/emojiphrases
 
 $ git push heroku master   // pushes to heroku and builds the app
+
+
+// Accessing Heroku DB in IntellJ
+
+    Database Tool Window / New / Data Source / PostreSQL
+    Put Host, Port, Database, User, Password that you find on https://data.heroku.com/
+    Go to Advanced tab and put:
+        ssl: true
+        sslfactory: org.postgresql.ssl.NonValidatingFactory
+
+
+// DOCKER setup
+
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+    }
+}
+
+apply plugin: "com.github.johnrengelman.shadow"
+
+mainClassName = "com.spyrdonapps.ApplicationKt"
+
+shadowJar {
+    baseName = 'emojiphrases-ktor'
+    classifier = null
+    version = null
+}
+
+$ ./gradlew build   // in root dir, the build directory will be created, inside build/libs are jar files
+
+touch Dockerfile // in root dir
+    see content in repo
+
