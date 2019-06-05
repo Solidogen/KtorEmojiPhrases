@@ -4,6 +4,7 @@ import com.spyrdonapps.model.EmojiPhrase
 import com.spyrdonapps.model.User
 
 interface Repository {
+    // TODO rename those after finishing
     suspend fun add(userId: String, emojiValue: String, phraseValue: String)
     suspend fun phrase(id: Int): EmojiPhrase?
     suspend fun phrase(id: String): EmojiPhrase?
@@ -14,5 +15,6 @@ interface Repository {
 
     suspend fun user(userId: String, hash: String? = null): User?
     suspend fun userByEmail(email: String): User?
+    suspend fun userById(userId: String): User?
     suspend fun createUser(user: User)
 }

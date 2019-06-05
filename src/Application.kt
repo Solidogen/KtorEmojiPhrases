@@ -1,7 +1,8 @@
 package com.spyrdonapps
 
-import com.ryanharter.ktor.moshi.moshi
-import com.spyrdonapps.api.phrase
+import com.spyrdonapps.api.login
+import com.spyrdonapps.api.phrasesApi
+import com.spyrdonapps.auth.JwtService
 import com.spyrdonapps.auth.hash
 import com.spyrdonapps.auth.hashKey
 import com.spyrdonapps.model.AppLocation
@@ -13,8 +14,10 @@ import com.spyrdonapps.webapp.*
 import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.*
 import io.ktor.auth.*
+import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.freemarker.*
+import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.locations.*
@@ -44,7 +47,9 @@ fun Application.module(testing: Boolean = false) {
     }
 
     install(ContentNegotiation) {
-        moshi()
+        gson {
+            setPrettyPrinting()
+        }
     }
 
     install(FreeMarker) {
@@ -66,6 +71,21 @@ fun Application.module(testing: Boolean = false) {
     DatabaseFactory.init()
 
     val db = EmojiPhrasesRepository()
+    val jwtService = JwtService()
+
+    install(Authentication) {
+        jwt("jwt") {
+            verifier(jwtService.verifier)
+            realm = "emojiphrases app"
+            validate {
+                val payload = it.payload
+                val claim = payload.getClaim("id")
+                val claimString = claim.asString()
+                val user = db.userById(claimString)
+                user
+            }
+        }
+    }
 
     routing {
         static("/static") {
@@ -79,7 +99,8 @@ fun Application.module(testing: Boolean = false) {
         signUp(db, hashFunction)
 
         // API
-        phrase(db)
+        login(db, jwtService)
+        phrasesApi(db)
     }
 }
 

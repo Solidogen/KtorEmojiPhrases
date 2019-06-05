@@ -1,5 +1,6 @@
 package com.spyrdonapps.model
 
+import io.ktor.auth.*
 import org.jetbrains.exposed.sql.Table
 import java.io.Serializable
 
@@ -8,7 +9,7 @@ data class User(
     val email: String,
     val displayName: String,
     val passwordHash: String
-) : Serializable
+) : Serializable, Principal
 
 object UsersTable : Table() {
     val id = varchar("id", 20).primaryKey()

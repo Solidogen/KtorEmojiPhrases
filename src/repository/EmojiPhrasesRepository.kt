@@ -74,6 +74,14 @@ class EmojiPhrasesRepository : Repository {
         }.singleOrNull()
     }
 
+    override suspend fun userById(userId: String) = dbQuery {
+        UsersTable.select {
+            UsersTable.id eq userId
+        }.mapNotNull {
+            toUser(it)
+        }.singleOrNull()
+    }
+
     override suspend fun createUser(user: User) {
         dbQuery {
             UsersTable.insert {

@@ -33,3 +33,15 @@ JDBC_DATABASE_URL jdbc:postgresql:emojidb?user=postgres      (HERE IS WHICH DATA
 $
 sudo /etc/init.d/postgresql restart
 $
+
+
+// saving jwt as global var in postman
+
+Tests tab:
+
+var data = responseBody;
+postman.clearGlobalVariable("jwt_token")
+postman.setGlobalVariable("jwt_token", data)
+
+
+//
