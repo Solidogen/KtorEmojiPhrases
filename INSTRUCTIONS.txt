@@ -49,3 +49,16 @@ DigitalOcean, Heroku, AWS, Azure, Google Cloud Platform, (App Engine?)
 can use Docker
 
 // TODO ktor SSL
+
+// HEROKU setup
+
+go to app root ->
+$ heroku create <heroku_app_name> // creates heroku app and git remote named "heroku" for pushing directly
+
+build.gradle
+    task stage(dependsOn: ['installDist'])
+
+touch Procfile ->
+    web: ./build/install/emojiphrases/bin/emojiphrases
+
+$ git push heroku master   // pushes to heroku and builds the app
