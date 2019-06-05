@@ -3,65 +3,66 @@
 
 // accessing postgres user in terminal
 
-$
-sudo su - postgres (no idea if I need it anymore)
-psql -U postgres
-psql -U postgres -d emojidb (log straight into DB)
-$
-also IntelliJ -> database -> add -> paste JDBC link and download drivers if asked
+    $
+    sudo su - postgres (no idea if I need it anymore)
+    psql -U postgres
+    psql -U postgres -d emojidb (log straight into DB)
+    $
+    also IntelliJ -> database -> add -> paste JDBC link and download drivers if asked
 
 // creating/dropping db
 
-$
-create database emojidb;
+    $
+    create database emojidb;
 
-psql -U postgres -d postgres  (connect to another database to drop current one)
-drop database emojidb;
-$
+    psql -U postgres -d postgres  (connect to another database to drop current one)
+    drop database emojidb;
+    $
 
 
 // postgres env variable
 
-jdbcUrl = System.getenv("JDBC_DATABASE_URL")
+    jdbcUrl = System.getenv("JDBC_DATABASE_URL")
 
-Intellij -> run configuration -> env variables -> add ->
-JDBC_DATABASE_URL jdbc:postgresql:emojidb?user=postgres      (HERE IS WHICH DATABASE APP CONNECTS TO)
+    Intellij -> run configuration -> env variables -> add ->
+    JDBC_DATABASE_URL jdbc:postgresql:emojidb?user=postgres      (HERE IS WHICH DATABASE APP CONNECTS TO)
 
 
 // postgres reset after changing pg_hba.conf
 
-$
-sudo /etc/init.d/postgresql restart
-$
+    $
+    sudo /etc/init.d/postgresql restart
+    $
 
 
 // saving jwt as global var in postman
 
-Tests tab:
+    Tests tab:
 
-var data = responseBody;
-postman.clearGlobalVariable("jwt_token")
-postman.setGlobalVariable("jwt_token", data)
+    var data = responseBody;
+    postman.clearGlobalVariable("jwt_token")
+    postman.setGlobalVariable("jwt_token", data)
 
 
 // decent cloud providers for app
-DigitalOcean, Heroku, AWS, Azure, Google Cloud Platform, (App Engine?)
-can use Docker
+
+    DigitalOcean, Heroku, AWS, Azure, Google Cloud Platform, (App Engine?)
+    can use Docker
 
 // TODO ktor SSL
 
 // HEROKU setup
 
-go to app root ->
-$ heroku create <heroku_app_name> // creates heroku app and git remote named "heroku" for pushing directly
+    go to app root ->
+    $ heroku create <heroku_app_name> // creates heroku app and git remote named "heroku" for pushing directly
 
-build.gradle
-    task stage(dependsOn: ['installDist'])
+    build.gradle
+        task stage(dependsOn: ['installDist'])
 
-touch Procfile ->
-    web: ./build/install/emojiphrases/bin/emojiphrases
+    touch Procfile ->
+        web: ./build/install/emojiphrases/bin/emojiphrases
 
-$ git push heroku master   // pushes to heroku and builds the app
+    $ git push heroku master   // pushes to heroku and builds the app
 
 
 // Accessing Heroku DB in IntellJ
@@ -75,28 +76,68 @@ $ git push heroku master   // pushes to heroku and builds the app
 
 // DOCKER setup
 
-buildscript {
-    repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
+    buildscript {
+        repositories {
+            maven { url "https://plugins.gradle.org/m2/" }
+        }
+
+        dependencies {
+            classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+        }
     }
 
-    dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+    apply plugin: "com.github.johnrengelman.shadow"
+
+    mainClassName = "com.spyrdonapps.ApplicationKt"
+
+    shadowJar {
+        baseName = 'emojiphrases-ktor'
+        classifier = null
+        version = null
     }
-}
 
-apply plugin: "com.github.johnrengelman.shadow"
+    $ ./gradlew build   // in root dir, the build directory will be created, inside build/libs are jar files
 
-mainClassName = "com.spyrdonapps.ApplicationKt"
+    touch Dockerfile // in root dir
+        see content in repo
+        XXX.jar must equal shadowJar { baseName = 'XXX' ...
 
-shadowJar {
-    baseName = 'emojiphrases-ktor'
-    classifier = null
-    version = null
-}
+    from root (USE "SUDO docker..." if you don't have a docker group)
+    $ docker build -t emojiphrases-ktor .
 
-$ ./gradlew build   // in root dir, the build directory will be created, inside build/libs are jar files
+    after build
+    $ docker images
 
-touch Dockerfile // in root dir
-    see content in repo
+    mkdir -p $HOME/docker/volumes/postgres
+    docker pull postgres
+    docker network create emojiphrases-net
 
+    // run database docker container
+    docker run --network emojiphrases-net --rm --name pg-docker -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v $HOME/docker/volumes/postgres:/var/lib/postgresql/data postgres
+    (if port taken try 'service postgresql stop')
+
+    docker ps // checks if image is running
+    docker exec -it pg-docker psql -U postgres -c "create database emojiphrases;" // if okay, it will print out CREATE DATABASE
+
+    // run application docker container
+    docker run --network emojiphrases-net --name emojiphrases-ktor -e JDBC_DATABASE_URL="jdbc:postgresql://pg-docker/emojiphrases?user=postgres$password=postgres" -e SECRET_KEY="345086738946709348506" -e JWT_SECRET="kZnzR7iw463nj3GGljng" -m512M --cpus 2 -it -p 8080:8080 --rm emojiphrases-ktor
+    (if 'The server requested password-based authentication, but no password was provided':
+     hm, typically pg_hba.conf would be changed here from peer/md5 to trust, but no idea how it relates to docker and seems unsafe.
+     I'm not fixing it right now, free tier heroku is enough for now)
+
+    // stop containers
+    docker stop emojiphrases-ktor (-net?)
+    docker stop pg-docker
+
+    // remove containers
+    docker rm $(docker stop $(docker ps -q))
+
+    // remove images
+    docker image rm postgres
+    docker image rm emojiphrases-ktor
+
+    docker images -> openjdk IMAGE ID
+    docker image rm <openjdk image id>
+
+    // remove network
+    docker network rm emojiphrases-net
