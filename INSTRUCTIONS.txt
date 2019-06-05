@@ -44,4 +44,8 @@ postman.clearGlobalVariable("jwt_token")
 postman.setGlobalVariable("jwt_token", data)
 
 
-//
+// decent cloud providers for app
+DigitalOcean, Heroku, AWS, Azure, Google Cloud Platform, (App Engine?)
+can use Docker
+
+// TODO ktor SSL
